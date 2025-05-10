@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LarahQuiz - Teste seu conhecimento sobre Stray Kids!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-image: url('https://i.pinimg.com/originals/7c/1e/13/7c1e13a6a1a6b1e8c4e4e4e4e4e4e4e4.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        
+        .pink-gradient {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+        }
+        
+        .glitter {
+            background-image: url('https://www.transparenttextures.com/patterns/glitter.png');
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="pink-gradient glitter py-6 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold text-pink-700 mb-2">Larah<span class="text-white">Quiz</span></h1>
+            <p class="text-xl text-pink-800">O quiz mais fofo sobre Stray Kids!</p>
+            <div class="mt-4">
+                <i class="fas fa-star text-yellow-300 text-2xl mx-1"></i>
+                <i class="fas fa-heart text-pink-600 text-2xl mx-1 heart-beat"></i>
+                <i class="fas fa-music text-purple-500 text-2xl mx-1"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="bg-white bg-opacity-90 rounded-xl p-8 max-w-2xl mx-auto shadow-xl text-center">
+            <img src="https://i.pinimg.com/originals/3a/1f/3b/3a1f3b5e5e5e5e5e5e5e5e5e5e5e5e5.jpg" alt="Stray Kids" class="w-full h-48 object-cover rounded-lg mb-6">
+            <h2 class="text-3xl font-bold text-pink-600 mb-4">Bem-vinda ao LarahQuiz!</h2>
+            <p class="text-lg text-gray-700 mb-6">Você é uma verdadeira STAY? Prove seu conhecimento sobre o Stray Kids nesse quiz super fofo!</p>
+            
+            <div class="mb-6">
+                <label for="player-name" class="block text-pink-700 font-medium mb-2">Qual é o seu nome?</label>
+                <input type="text" id="player-name" class="w-full px-4 py-2 border-2 border-pink-300 rounded-full focus:outline-none focus:border-pink-500" placeholder="Digite seu nome aqui">
+            </div>
+            
+            <button id="start-btn" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg">
+                <i class="fas fa-play mr-2"></i> Começar!
+            </button>
+            
+            <div class="mt-8">
+                <p class="text-sm text-gray-500">Feito com <i class="fas fa-heart text-pink-500"></i> por uma STAY para todas as STAYs</p>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white bg-opacity-90 rounded-xl p-8 max-w-2xl mx-auto shadow-xl">
+            <div class="flex justify-between items-center mb-6">
+                <span id="player-display" class="text-pink-600 font-bold"></span>
+                <span id="question-counter" class="bg-pink-500 text-white px-3 py-1 rounded-full text-sm"></span>
+            </div>
+            
+            <div id="question-container" class="mb-8">
+                <h2 id="question" class="text-2xl font-bold text-pink-700 mb-6 text-center"></h2>
+                
+                <div id="options" class="grid grid-cols-1 gap-4">
+                    <!-- Options will be inserted here by JavaScript -->
+                </div>
+            </div>
+            
+            <div id="feedback" class="hidden text-center mb-6">
+                <p id="feedback-text" class="text-xl font-bold mb-4"></p>
+                <button id="next-btn" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full">
+                    Próxima <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="progress-bar bg-pink-200 rounded-full h-4 mb-6">
+                <div id="progress" class="bg-pink-500 h-full rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden bg-white bg-opacity-90 rounded-xl p-8 max-w-2xl mx-auto shadow-xl text-center">
+            <h2 class="text-3xl font-bold text-pink-600 mb-4">Parabéns, <span id="result-name" class="text-purple-600"></span>!</h2>
+            <p class="text-xl mb-6">Você completou o LarahQuiz!</p>
+            
+            <div class="bg-pink-100 rounded-xl p-6 mb-8">
+                <p class="text-lg mb-2">Sua pontuação:</p>
+                <p id="score" class="text-5xl font-bold text-pink-600 mb-4">0/10</p>
+                <p id="result-message" class="text-lg"></p>
+            </div>
+            
+            <div id="badge" class="inline-block bg-gradient-to-r from-pink-400 to-purple-500 text-white p-4 rounded-full mb-6 shadow-lg">
+                <i class="fas fa-crown text-4xl"></i>
+            </div>
+            
+            <div class="flex justify-center space-x-4 mb-8">
+                <button id="restart-btn" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full">
+                    <i class="fas fa-redo mr-2"></i> Jogar novamente
+                </button>
+                <button id="share-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-full">
+                    <i class="fas fa-share-alt mr-2"></i> Compartilhar
+                </button>
+            </div>
+            
+            <div class="mt-6">
+                <p class="text-sm text-gray-500">Você ama o Stray Kids tanto quanto a Larah? <i class="fas fa-heart text-pink-500"></i></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="pink-gradient glitter py-4 text-center text-pink-800">
+        <div class="container mx-auto px-4">
+            <p>© 2023 LarahQuiz - Todos os direitos reservados para as STAYs</p>
+            <div class="mt-2">
+                <a href="#" class="text-pink-700 mx-2"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-pink-700 mx-2"><i class="fab fa-tiktok"></i></a>
+                <a href="#" class="text-pink-700 mx-2"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                question: "Qual é o nome completo do líder do Stray Kids?",
+                options: [
+                    "Bang Chan",
+                    "Bang Christopher Chan",
+                    "Bang Christopher",
+                    "Christopher Bang Chan"
+                ],
+                correct: 1,
+                explanation: "O nome completo do nosso líder é Bang Christopher Chan, mas ele é mais conhecido como Bang Chan ou simplesmente Chan!"
+            },
+            {
+                question: "Qual música do Stray Kids tem a famosa frase 'You can call me artist, you can call me idol'?",
+                options: [
+                    "God's Menu",
+                    "Miroh",
+                    "Back Door",
+                    "Thunderous"
+                ],
+                correct: 0,
+                explanation: "Essa frase icônica é de 'God's Menu', uma das músicas mais populares do grupo!"
+            },
+            {
+                question: "Quantos membros o Stray Kids tinha originalmente?",
+                options: [
+                    "7",
+                    "8",
+                    "9",
+                    "10"
+                ],
+                correct: 2,
+                explanation: "O Stray Kids começou com 9 membros, mas agora são 8 depois que Woojin deixou o grupo em 2019."
+            },
+            {
+                question: "Qual é o nome do reality show que formou o Stray Kids?",
+                options: [
+                    "Stray Kids Survival Show",
+                    "Stray Kids Debut Project",
+                    "Stray Kids",
+                    "Stray Kids: The Beginning"
+                ],
+                correct: 2,
+                explanation: "O reality show que formou o grupo se chamava simplesmente 'Stray Kids' e foi exibido em 2017!"
+            },
+            {
+                question: "Qual membro é conhecido por sua habilidade em dança 'krumping'?",
+                options: [
+                    "Hyunjin",
+                    "Felix",
+                    "Lee Know",
+                    "Changbin"
+                ],
+                correct: 0,
+                explanation: "Hyunjin é famoso por suas habilidades incríveis em krumping, um estilo de dança urbana!"
+            },
+            {
+                question: "Qual música do Stray Kids foi usada em uma competição de dança na Coreia?",
+                options: [
+                    "District 9",
+                    "Hellevator",
+                    "My Pace",
+                    "Side Effects"
+                ],
+                correct: 1,
+                explanation: "'Hellevator' foi usada no programa de competição de dança 'Street Woman Fighter' em 2021!"
+            },
+            {
+                question: "Qual membro nasceu na Austrália?",
+                options: [
+                    "Bang Chan e Felix",
+                    "Apenas Bang Chan",
+                    "Apenas Felix",
+                    "Nenhum dos dois"
+                ],
+                correct: 0,
+                explanation: "Tanto Bang Chan quanto Felix nasceram na Austrália! Eles são nossos Aussie boys!"
+            },
+            {
+                question: "Qual álbum contém a música 'Miroh'?",
+                options: [
+                    "I am NOT",
+                    "I am WHO",
+                    "I am YOU",
+                    "Clé 1: Miroh"
+                ],
+                correct: 3,
+                explanation: "'Miroh' é a música-título do álbum 'Clé 1: Miroh', lançado em 2019!"
+            },
+            {
+                question: "Qual membro é conhecido por sua voz profunda?",
+                options: [
+                    "Felix",
+                    "Changbin",
+                    "Seungmin",
+                    "I.N"
+                ],
+                correct: 0,
+                explanation: "Felix tem uma das vozes mais profundas do K-pop, especialmente quando ele faz seu famoso 'Deep voice~'!"
+            },
+            {
+                question: "Qual é o significado de 'Stray Kids'?",
+                options: [
+                    "Crianças perdidas",
+                    "Crianças que encontram seu caminho",
+                    "Crianças que se destacam",
+                    "Crianças que nunca desistem"
+                ],
+                correct: 1,
+                explanation: "Stray Kids significa crianças que estão encontrando seu caminho juntas, não crianças perdidas!"
+            }
+        ];
+
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const playerNameInput = document.getElementById('player-name');
+        const playerDisplay = document.getElementById('player-display');
+        const questionCounter = document.getElementById('question-counter');
+        const questionElement = document.getElementById('question');
+        const optionsContainer = document.getElementById('options');
+        const feedbackElement = document.getElementById('feedback');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress');
+        const resultName = document.getElementById('result-name');
+        const scoreElement = document.getElementById('score');
+        const resultMessage = document.getElementById('result-message');
+        const restartBtn = document.getElementById('restart-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const badge = document.getElementById('badge');
+
+        // Quiz variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let playerName = '';
+
+        // Start the quiz
+        startBtn.addEventListener('click', () => {
+            playerName = playerNameInput.value.trim() || 'STAY';
+            playerDisplay.textContent = `Jogador: ${playerName}`;
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+        });
+
+        // Load a question
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            questionElement.textContent = question.question;
+            optionsContainer.innerHTML = '';
+            
+            // Update progress
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Update question counter
+            questionCounter.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+            
+            // Create options
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('button');
+                optionElement.className = 'option bg-white border-2 border-pink-300 rounded-xl p-4 text-left transition-all hover:bg-pink-50';
+                optionElement.innerHTML = `
+                    <span class="font-bold text-pink-600 mr-2">${String.fromCharCode(65 + index)}.</span>
+                    ${option}
+                `;
+                optionElement.dataset.index = index;
+                optionElement.addEventListener('click', selectOption);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        // Select an option
+        function selectOption(e) {
+            const selectedOptionIndex = parseInt(e.target.dataset.index);
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            // Disable all options
+            options.forEach(option => {
+                option.disabled = true;
+                option.classList.remove('hover:bg-pink-50');
+            });
+            
+            // Mark correct and incorrect answers
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('bg-green-100', 'border-green-400');
+                } else if (index === selectedOptionIndex && index !== question.correct) {
+                    option.classList.add('bg-red-100', 'border-red-400');
+                }
+            });
+            
+            // Check if answer is correct
+            if (selectedOptionIndex === question.correct) {
+                feedbackText.textContent = `Correto! ${question.explanation}`;
+                feedbackText.className = 'text-green-600';
+                score++;
+                createConfetti();
+            } else {
+                feedbackText.textContent = `Ops! A resposta correta é: ${question.options[question.correct]}. ${question.explanation}`;
+                feedbackText.className = 'text-red-600';
+            }
+            
+            feedbackElement.classList.remove('hidden');
+        }
+
+        // Next question
+        nextBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            feedbackElement.classList.add('hidden');
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        // Show results
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            resultName.textContent = playerName;
+            scoreElement.textContent = `${score}/${questions.length}`;
+            
+            // Set result message based on score
+            if (score === questions.length) {
+                resultMessage.textContent = "Uau! Você é uma verdadeira STAY! Conhece tudo sobre o Stray Kids! 💖";
+                badge.innerHTML = '<i class="fas fa-crown text-4xl"></i> STAY de Ouro!';
+            } else if (score >= questions.length * 0.7) {
+                resultMessage.textContent = "Muito bom! Você é uma ótima STAY e conhece bastante sobre o Stray Kids! 😊";
+                badge.innerHTML = '<i class="fas fa-star text-4xl"></i> STAY Prata!';
+            } else if (score >= questions.length * 0.4) {
+                resultMessage.textContent = "Bom trabalho! Você conhece algumas coisas sobre o Stray Kids, continue aprendendo! 💕";
+                badge.innerHTML = '<i class="fas fa-heart text-4xl"></i> STAY Bronze!';
+            } else {
+                resultMessage.textContent = "Continue aprendendo sobre o Stray Kids! Eles têm muitas músicas incríveis para você descobrir! 🎶";
+                badge.innerHTML = '<i class="fas fa-music text-4xl"></i> STAY Iniciante!';
+            }
+            
+            createConfetti();
+        }
+
+        // Restart quiz
+        restartBtn.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            score = 0;
+            resultsScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            playerNameInput.value = playerName;
+            progressBar.style.width = '0%';
+        });
+
+        // Share results
+        shareBtn.addEventListener('click', () => {
+            alert(`Compartilhe seu resultado: ${playerName} acertou ${score} de ${questions.length} no LarahQuiz sobre Stray Kids! 🎉`);
+        });
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ff9a9e', '#fad0c4', '#fbc2eb', '#a18cd1', '#8fd3f4', '#84fab0'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -10 + 'px';
+                confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                
+                document.body.appendChild(confetti);
+                
+                const animationDuration = Math.random() * 3 + 2;
+                
+                confetti.style.transition = `top ${animationDuration}s linear, opacity ${animationDuration}s ease-out`;
+                confetti.style.opacity = '1';
+                
+                setTimeout(() => {
+                    confetti.style.top = '100vh';
+                    confetti.style.opacity = '0';
+                }, 10);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+        }
+    </script>
+</body>
+</html>
